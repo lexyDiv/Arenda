@@ -1,12 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Calendar } from "@demark-pro/react-booking-calendar";
 import "@demark-pro/react-booking-calendar/dist/react-booking-calendar.css";
-import { getByLabelText } from "@testing-library/react";
+//import { getByLabelText } from "@testing-library/react";
 import { getDateFormat } from "./functions/getDateFormat";
 import { addReserv, reserves, reservProg } from "./reserv";
+import { isDateResved } from "./functions/isDateReserved";
 
 const oneDay = 86400000;
-const today = new Date().getTime() + oneDay;
+//const today = new Date().getTime() + oneDay;
 const globalStartDate = new Date().getTime() - oneDay * 160;
 
 // const reserved = Array.from({ length: 3 }, (_, i) => {
@@ -18,7 +19,7 @@ const globalStartDate = new Date().getTime() - oneDay * 160;
 //     endDate: new Date(startDate.getTime() + oneDay * daysCount),
 //   };
 // });
-const testDate = new Date(today);
+//const testDate = new Date(today);
 // console.log('testDate = ', testDate);
 // console.log(new Date(globalStartDate));
 
@@ -39,7 +40,7 @@ while (tick < 1000) {
   tick++;
 }
 
-const startDate = new Date(today + oneDay * 8);
+//const startDate = new Date(today + oneDay * 8);
 
 const reserved = [
   // {
@@ -49,12 +50,13 @@ const reserved = [
 ];
 
 const Calendar1 = function () {
+  // eslint-disable-next-line no-unused-vars
   const [draw, setDraw] = useState(null);
   const [selectedDates, setSelectedDates] = useState([]);
 
   const el = useRef();
   const [cal, setCal] = useState(null);
-  const [ariaLabel, setAriaLebale] = useState("");
+ 
 
   useEffect(() => {
     setCal(el.current.firstChild.lastChild);
@@ -115,7 +117,18 @@ const Calendar1 = function () {
           (e) => {
             console.log(getDateFormat(e[0]));
            // console.log(e[0].getMonth());
-            reservProg(setSelectedDates, e[0]);
+          const isDayReserved =  isDateResved(getDateFormat(e[0]), reserves);
+          
+              if(!isDayReserved)
+              {
+                if(!selectedDates.length)
+                {
+                  reservProg(setSelectedDates, e[0]);
+                } else {
+                  console.log("pretected needed !!!");
+                }
+              }
+          
           }
         }
         onClick={(e) => {
@@ -127,26 +140,7 @@ const Calendar1 = function () {
           ) {
             // setAriaLebale(e.target.parentNode.ariaLabel); // ok
           }
-          // console.log(e.target.parentNode.ariaLabel);
-          //     console.log(e.target.parentNode);
-          //    if(e.target.parentNode.ariaLabel)
-          //    {
 
-          //     e.target.style.backgroundColor = "red";
-          //    }
-          // const ariaL = e.target.parentNode.ariaLabel;
-          //     if(cal)
-          //     {
-          //         for(let i = 0; i < cal.childNodes.length; i++)
-          //             {
-          //                // console.log(cal.childNodes[i].ariaLabel);
-          //                 if(cal.childNodes[i].ariaLabel === ariaL)
-          //                 {
-          //                     console.log(ariaL);
-          //                     cal.childNodes[i].style.backgroundColor = "red";
-          //                 }
-          //             }
-          //     }
         }}
       />
       {selectedDates.length === 2 && (
