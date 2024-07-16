@@ -15,10 +15,11 @@ class Reserv {
   }
 
   getDatesArr() {
+   // console.log("in startDate = ", this.startDate.getMonth());
     this.startTime = this.startDate.getTime();
     this.endTime = this.endDate.getTime();
     let tick = 1;
-    while (tick < 10) {
+    while (tick < 1000) {
       tick === 1 && this.datesArr.push(getDateFormat(new Date(this.startTime)));
       const startDateFormat = getDateFormat(
         new Date(this.startTime + oneDay * tick)
