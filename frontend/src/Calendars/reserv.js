@@ -8,17 +8,20 @@ class Reserv {
   constructor(startDate, endDate, type) {
     this.startDate = startDate;
     this.endDate = endDate;
+    this.startTime = 0;
+    this.endTime = 0;
     this.type = type;
     this.datesArr = [];
   }
 
   getDatesArr() {
+    this.startTime = this.startDate.getTime();
+    this.endTime = this.endDate.getTime();
     let tick = 1;
-    while (tick < 1000) {
-      tick === 1 &&
-        this.datesArr.push(getDateFormat(new Date(this.startDate.getTime())));
+    while (tick < 10) {
+      tick === 1 && this.datesArr.push(getDateFormat(new Date(this.startTime)));
       const startDateFormat = getDateFormat(
-        new Date(this.startDate.getTime() + oneDay * tick)
+        new Date(this.startTime + oneDay * tick)
       );
       const endDateFormat = getDateFormat(new Date(this.endDate));
       this.datesArr.push(startDateFormat);

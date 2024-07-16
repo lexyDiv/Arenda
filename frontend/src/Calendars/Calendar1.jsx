@@ -75,11 +75,15 @@ const Calendar1 = function () {
         }
       }
     }
-  }, 10);
+  }, 0);
 
  // console.log(selectedDates);
  //console.log(ariaLabel);
 //console.log(selectedDates);
+//const dt = new Date();
+//console.log("date = ", dt);
+//console.log("JSON date = ", new Date(dt)); // ok
+//console.log("JSON date = ", new Date(JSON.parse(JSON.stringify(dt)))); // ok
   return (
     <div ref={el}>
       <Calendar
