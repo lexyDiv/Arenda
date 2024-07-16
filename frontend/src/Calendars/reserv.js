@@ -5,18 +5,24 @@ const today = new Date().getTime() + oneDay;
 const globalStartDate = new Date().getTime() - oneDay * 160;
 
 class Reserv {
-  constructor(startDate, endDate) {
+  constructor(startDate, endDate, type) {
     this.startDate = startDate;
     this.endDate = endDate;
+    this.type = type;
     this.datesArr = [];
   }
 
   getDatesArr() {
     let tick = 1;
     while (tick < 1000) {
-      const startDateFormat = getDateFormat(new Date(this.startDate));
+      tick === 1 &&
+        this.datesArr.push(getDateFormat(new Date(this.startDate.getTime())));
+      const startDateFormat = getDateFormat(
+        new Date(this.startDate.getTime() + oneDay * tick)
+      );
       const endDateFormat = getDateFormat(new Date(this.endDate));
-      this.datesArr.push(new Date(this.startDate.getTime() + oneDay * tick));
+      this.datesArr.push(startDateFormat);
+      // console.log("startDateFormat = ", startDateFormat, " endDateFormat = " + endDateFormat);
       if (startDateFormat === endDateFormat) {
         break;
       }
@@ -24,4 +30,23 @@ class Reserv {
     }
     console.log(this.datesArr);
   }
+}
+
+export const reserves = [];
+
+export function reservProg(setSelectedDates, date) {
+  setSelectedDates((prev) => {
+    if (prev.length === 2) {
+      return [];
+    }
+    return [...prev, date];
+  });
+}
+
+export function addReserv(selectedDates, setSelectedDates, type) {
+  const newReserv = new Reserv(selectedDates[0], selectedDates[1], type);
+  newReserv.getDatesArr();
+  reserves.push(newReserv);
+  setSelectedDates([]);
+  console.log(reserves);
 }
