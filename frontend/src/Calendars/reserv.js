@@ -21,6 +21,10 @@ class Reserv {
     let tick = 1;
     while (tick < 1000) {
       tick === 1 && this.datesArr.push(getDateFormat(new Date(this.startTime)));
+      if(this.startTime === this.endTime)
+      {
+        return;
+      }
       const startDateFormat = getDateFormat(
         new Date(this.startTime + oneDay * tick)
       );

@@ -5,6 +5,7 @@ import "@demark-pro/react-booking-calendar/dist/react-booking-calendar.css";
 import { getDateFormat } from "./functions/getDateFormat";
 import { addReserv, reserves, reservProg } from "./reserv";
 import { isDateResved } from "./functions/isDateReserved";
+import { isReservedInterval } from "./functions/isResevedInterval";
 
 const oneDay = 86400000;
 //const today = new Date().getTime() + oneDay;
@@ -56,7 +57,6 @@ const Calendar1 = function () {
 
   const el = useRef();
   const [cal, setCal] = useState(null);
- 
 
   useEffect(() => {
     setCal(el.current.firstChild.lastChild);
@@ -66,7 +66,7 @@ const Calendar1 = function () {
     if (cal) {
       // console.log(ariaLabel);
       // console.log(cal.childNodes);
-    // reserves.length && console.log("reserves[0].arr.length", reserves[0].datesArr.length);
+      // reserves.length && console.log("reserves[0].arr.length", reserves[0].datesArr.length);
       for (let i = 0; i < cal.childNodes.length; i++) {
         const div = cal.childNodes[i];
         let color = "";
@@ -77,9 +77,14 @@ const Calendar1 = function () {
             // console.log('reservedDay = ', reservedDay, ' div.ariaLabel', div.ariaLabel);
             // console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
             if (reservedDay === div.ariaLabel) {
-             // console.log(div.ariaLabel);
-              color = "red";
+              // console.log(div.ariaLabel);
+              div.style.borderStyle = "solid";
+              div.style.borderColor = "black";
+              color = reserv.type === 'go' ? "red" : "yellow";
               break;
+            }
+            else{
+              div.style.borderStyle = "none";
             }
           }
           if (color) {
@@ -92,6 +97,9 @@ const Calendar1 = function () {
         //   div.style.backgroundColor = "";
         // }
         div.style.backgroundColor = color;
+        div.style.borderRadius = "10px";
+      //  div.style.borderStyle = "none";
+        
       }
     }
   }, 0);
@@ -116,23 +124,25 @@ const Calendar1 = function () {
           // setSelectedDates
           (e) => {
             console.log(getDateFormat(e[0]));
-           // console.log(e[0].getMonth());
-          const isDayReserved =  isDateResved(getDateFormat(e[0]), reserves);
-          
-              if(!isDayReserved)
-              {
-                if(!selectedDates.length)
-                {
+            // console.log(e[0].getMonth());
+            const isDayReserved = isDateResved(getDateFormat(e[0]), reserves);
+
+            if (!isDayReserved) {
+              if (!selectedDates.length) {
+                reservProg(setSelectedDates, e[0]);
+              } else {
+                if (
+                  !isReservedInterval(selectedDates[0], e[0], reserves) ||
+                  getDateFormat(selectedDates[0]) === getDateFormat(e[0])
+                ) {
                   reservProg(setSelectedDates, e[0]);
-                } else {
-                  console.log("pretected needed !!!");
                 }
               }
-          
+            }
           }
         }
         onClick={(e) => {
-         // console.log("onClick = ", e.targe);
+          // console.log("onClick = ", e.targe);
           if (
             e.target.parentNode.ariaLabel &&
             (e.target.classList.contains("calendar__day-content") ||
@@ -140,16 +150,16 @@ const Calendar1 = function () {
           ) {
             // setAriaLebale(e.target.parentNode.ariaLabel); // ok
           }
-
         }}
       />
+      {selectedDates.length === 1 && <button
+      onClick={() => setSelectedDates([])}
+      >отмена</button>}
       {selectedDates.length === 2 && (
         <>
           <button
             type="button"
-            onClick={() => {
-              console.log("here");
-            }}
+            onClick={() => addReserv(selectedDates, setSelectedDates, "hold")}
           >
             бронировать
           </button>
